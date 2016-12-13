@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--  数据库驱动配置-->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+
+    <!-- 数据库连接池 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 配置连接池属性 -->
+        <property name="driverClass" value="${driver}" />
+        <property name="jdbcUrl" value="${url}" />
+        <property name="user" value="root" />
+        <property name="password" value="${password}"/>
+
+        <!-- 配置数据库连接池默认属性 -->
+        <property name="maxPoolSize" value="30" />
+        <property name="minPoolSize" value="10" />
+        <property name="autoCommitOnClose" value="false" />
+        <property name="loginTimeout" value="1000" />
+
+        <!-- 默认重试次数 -->
+        <property name="acquireRetryAttempts" value="2" />
+
+    </bean>
+
+    <!-- 配置SQLSession对象 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--  注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 全局配置文件 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+
+        <!-- 扫描entities -->
+        <property name="typeAliasesPackage" value="com.seckill.entity" />
+
+        <!-- 扫描SQL配置文件 mapper需要的xml文件-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml" />
+    </bean>
+
+    <!-- 配置扫描DAO接口包 ， 动态实现DAO接口，并且注入到spring的容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入SQLSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+
+        <!-- 给出需要扫描的DAO包 -->
+        <property name="basePackage" value="com.seckill.dao" />
+
+    </bean>
+</beans>
