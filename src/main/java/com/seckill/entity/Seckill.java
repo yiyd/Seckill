@@ -3,10 +3,10 @@ package com.seckill.entity;
 import java.util.Date;
 
 /**
- * Created by TONG on 2016/10/19.
+ * Created by TONG on 2017/01/13. 
  */
 public class Seckill {
-
+    // ÎÒÌí¼ÓÁË×¢ÊÍ
     private long seckillId;
 
     private String name;
